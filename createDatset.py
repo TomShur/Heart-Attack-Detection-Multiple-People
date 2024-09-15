@@ -16,17 +16,17 @@ def create_data_frame(points,paths):
     return df
 
 
-train_none_path = "dataset/test/01Infarct"
+path = "dataset/test/01Infarct"
 detector = pm.PoseDetector(True) # mode=True so it will treat the images as static and not video stream
-pointsList = np.empty((0, 10, 2))
+pointsList = np.empty((0, 9, 3))
 print(pointsList.shape)
 print(pointsList)
 
 img = 0
-paths = os.listdir(train_none_path)
+paths = os.listdir(path)
 
-for img_path in os.listdir(train_none_path):
-    img = cv2.imread(train_none_path + "/" + img_path)
+for img_path in os.listdir(path):
+    img = cv2.imread(path + "/" + img_path)
 
     #print(type(img))
     img = detector.findPose(img)
@@ -51,7 +51,7 @@ for img_path in os.listdir(train_none_path):
     print(temp)
 
 df=create_data_frame(pointsList, paths)
-df.to_csv('testInfarctData.csv', index=False)
+df.to_csv('testInfarctDataZ.csv', index=False)
 
 
 

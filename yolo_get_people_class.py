@@ -1,5 +1,4 @@
 
-
 import torch
 import numpy as np
 import cv2
@@ -20,7 +19,9 @@ YOLO_PATH = "yolov8n.pt" #Maybe should be a parameter of the class or a constant
 class PersonDetection:
     # Maybe YOLO_PATH should be a parameter of the class or a constant of the class
     CLASSES = [0]
-    def __init__(self, conf,extra_margin):#__init__(self, capture_index,conf,classes,extra_margin):
+    def __init__(self,frame_width,frame_height,extra_margin,conf):#__init__(self, capture_index,conf,classes,extra_margin):
+        self.frame_width = frame_width
+        self.frame_height = frame_height
         self.conf=conf
         #self.CLASSES=classes #Should be const instead
         self.extra_margin = extra_margin #extra space of pixels we take for the boxes
@@ -108,8 +109,8 @@ class PersonDetection:
         #Obviously need to change to work with multiple people. Also probably return a list of pictures
         for box in xyxys:#may collapse if it is empty
 
-            cv2.circle(annotated_frame,(int(box[0]),int(box[1])),20,color=(255, 0, 0) )
-            cv2.circle(annotated_frame,(int(box[2]),int(box[3])),20,color = (255, 0, 0) )
+            cv2.circle(annotated_frame,(max(int(box[0]) - self.extra_margin,0),max(int(box[1])- self.extra_margin,0)),20,color=(255, 0, 0) )
+            cv2.circle(annotated_frame,(min(int(box[2])+self.extra_margin,self.frame_width),min(int(box[3])+self.extra_margin,self.frame_height)),20,color=(255, 0, 0))
         #cv2.circle(annotated_frame, (int(xyxys[0][0]), int(xyxys[0][1])), 20, color=(255, 0, 0))
         #cv2.circle(annotated_frame, (int(xyxys[0][2]), int(xyxys[0][3])), 20, color=(255, 0, 0))
 
@@ -120,7 +121,8 @@ class PersonDetection:
         return annotated_frame,xyxys
 
     def crop_image(self,frame,x1,y1,x2,y2):
-        return frame[max(int(y1) - self.extra_margin, 0):max(int(y2) + self.extra_margin, 0), max(int(x1) - self.extra_margin, 0):max(int(x2) + self.extra_margin, 0)]
+        return frame[max(int(y1) - self.extra_margin, 0):min(int(y2) + self.extra_margin, self.frame_height), max(int(x1) - self.extra_margin, 0):min(int(x2) + self.extra_margin, self.frame_width)]
+        #return frame[max(int(y1) - self.extra_margin, 0):max(int(y2) + self.extra_margin, 0), max(int(x1) - self.extra_margin, 0):max(int(x2) + self.extra_margin, 0)]
 
     def get_people_from_boxes(self,frame,boxes):
         people = []
@@ -140,7 +142,7 @@ class PersonDetection:
         end_time = time()
         fps = 1 / np.round(end_time - start_time, 2)
 
-        cv2.putText(frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
+        #cv2.putText(frame, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 2)
         # frame = self.crop_image(frame,int(boxes[0][0]),int(boxes[0][1]),int(boxes[0][2]),int(boxes[0][3])) #Code needs while loop to work for multiple people.
         return frame,self.get_people_from_boxes(frame,boxes)
 

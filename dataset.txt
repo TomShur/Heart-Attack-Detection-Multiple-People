@@ -1,0 +1,1 @@
+link to a github where the dataset folder is the same as the dataset we used: https://github.com/Turing-IA-IHC/Heart-Attack-Detection-In-Images/tree/master/dataset

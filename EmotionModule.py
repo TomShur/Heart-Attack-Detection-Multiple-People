@@ -2,10 +2,10 @@ from fer import FER
 
 
 class EmotionDetector:
-    SURPRISE_THRESHOLD = 0.2 #0.35
-    ANGRY_THRESHOLD = 0.12   #0.3
-    FEAR_THRESHOLD = 0.3     #0.35
-    NEUTRAL_THRESHOLD = 0.5  #0.5  # lower threshold
+    SURPRISE_THRESHOLD = 0.4 #0.2 #0.35
+    ANGRY_THRESHOLD = 0.25 #0.12   #0.3
+    FEAR_THRESHOLD = 0.3 #0.3     #0.35
+    NEUTRAL_THRESHOLD = 0.5 #0.5  #0.5  # lower threshold
 
     def __init__(self):
         self.emotion_detector = FER()

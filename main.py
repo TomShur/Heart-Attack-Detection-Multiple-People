@@ -160,4 +160,4 @@ def main(multi=True, model_complexity=0, with_emotion=True):
 
 #Add code here to close cap
 
-main(multi=True, with_emotion=False, model_complexity=2)
+main(multi=True, with_emotion=True, model_complexity=0)

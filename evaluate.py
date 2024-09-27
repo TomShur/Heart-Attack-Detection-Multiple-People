@@ -115,7 +115,7 @@ path_test_inf = 'testInfarctData.csv'
 
 skel_test, labels_test = prepare_data(path_test_none, path_test_inf, is_neck=True)
 
-for i in range(10):
+for i in range(10):  # print the accuracy for each model on the test dataset (the test accuracy)
     model = load_model('model_1D/0' + str(i) + '_model_1D.h5')
     loss, accuracy = model.evaluate(skel_test, labels_test)
     print(f'2D {i} Test Loss: {loss}')

@@ -19,10 +19,7 @@ from sklearn.utils import shuffle
 from keras import backend as K
 
 
-def convert(string):
-    #string = ast.literal_eval(string)
-    #arr = string.split("[")[1].split("]")[0].split()
-
+def convert(string):  # convert the string of the array (as saved in the csv file) to numpy array
     point = string.split("[")
     point = point[1]
     point = point.split("]")
@@ -33,17 +30,17 @@ def convert(string):
 
 def prepare_data(path_none, path_inf, is_neck=false):
     # None:
-    df_none = pd.read_csv(path_none, header=0)  # the DataFrame
-    if(is_neck):
-        #df_none = df_none.drop([10], axis=1)
+    df_none = pd.read_csv(path_none, header=0)  # read the DataFrame
+    if(is_neck):  # for some version we saved the estimated neck, so we added a flag the when set to true will drop the neck coordinate
         df_none = df_none.iloc[:, :10]
 
-    df_none = df_none.iloc[:, 1:]
+    df_none = df_none.iloc[:, 1:]  # this is from the time we saved also the id's of the landmarks, so we want discard them
     print("none:")
     print(df_none)
     print("************")
 
-    skel_none = np.empty((df_none.shape[0], df_none.shape[1], 3))
+    skel_none = np.empty((df_none.shape[0], df_none.shape[1], 3))  # this array will contain the skeleton labeled as none
+    # iterate through each cell in the dataFrame, convert to numpy array, and fill in the array
     for i in range(df_none.shape[0]):
         for j in range(df_none.shape[1]):
             temp = convert(df_none.iloc[i][j])
@@ -77,11 +74,11 @@ def prepare_data(path_none, path_inf, is_neck=false):
     print(skel_inf)
     print(skel_inf.shape)
 
-    skel_train = np.concatenate((skel_none, skel_inf))
+    skel_train = np.concatenate((skel_none, skel_inf))  # unite the none and infarct datasets
 
     print(f"data shape = {skel_train.shape}")
 
-    labels = np.concatenate((np.zeros(skel_none.shape[0]), (np.ones(skel_inf.shape[0]))))
+    labels = np.concatenate((np.zeros(skel_none.shape[0]), (np.ones(skel_inf.shape[0]))))  # the labels for the dataset, 0 for none and 1 for infarct
     print(f"labels.shape={labels.shape}")
     skel_train, labels = shuffle(skel_train, labels, random_state=20)
 
@@ -117,16 +114,12 @@ if not os.path.exists(OUTPUT_DIR):
     os.mkdir(OUTPUT_DIR)
 
 
-# THE NN
 K.clear_session()
-
+# build the CNN architecture
 model = Sequential()
 model.add(Conv1D(4, 2, strides=1, padding='valid', activation='relu', input_shape=(9, 3)))
 model.add(Conv1D(8, 3, strides=1, padding='same', activation='relu'))
-
 model.add(Conv1D(16, 3, strides=1, padding='same', activation='relu'))
-#model.add(Conv2D(1, (3, 3), strides=(1, 1), padding='same', activation='relu'))
-
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
@@ -135,7 +128,7 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 model.summary()
-
+# in each iteration, save the current state of the model, so that in the end we get multiple model and can choose the best one
 for i in range(NUM_CHECK_POINT):
     history = model.fit(skel_train, labels_train,
                         epochs=EPOCH_CHECK_POINT,

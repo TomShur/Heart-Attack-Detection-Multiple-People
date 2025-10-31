@@ -13,6 +13,9 @@ A probability is computed for each such emotion, and with predetermined tuned hy
 We trained a CNN model that outputs a prediction based on the body position of the person in the image. <br>
 Instead of the whole image, the model gets the **skeleton** of the person in the image as input. <br>
 The "skeleton" of the person is a set of specific 2d points identified using a pose detection model from the **Mediapipe** library. <br>
+
+<img width="482" height="856" alt="image" src="https://github.com/user-attachments/assets/1d920989-f384-4c5f-b024-9a7e439a5b3a" />
+
 This approach helps reduce dimensionality ,which is crucial both to deal with the curse of dimensionality and to speedup the computation. <br>
 It also may reduce potential bias ,for example the model will depend less on the background of the image ,the skin color of the person etc. <br>
 ### Generalizing for Multi-Person

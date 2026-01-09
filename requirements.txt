@@ -1,0 +1,12 @@
+numpy
+pandas
+opencv-python
+mediapipe
+tensorflow
+fer
+ultralytics
+supervision
+scikit-learn
+matplotlib
+shapely
+sympy
